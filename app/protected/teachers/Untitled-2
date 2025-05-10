@@ -1,0 +1,28 @@
+// Bottom-up approach (Iterative)
+int coinChangeIterative(vector<int>& coins, int amount) {
+    int n = coins.size();
+    vector<vector<int>> dp(amount + 1, vector<int>(n + 1, INF));
+    
+    // Base case: amount = 0 can be made with 0 coins
+    for(int j = 0; j <= n; j++) {
+        dp[0][j] = 0;
+    }
+    
+    // Fill DP table
+    for(int i = 1; i <= amount; i++) {
+        for(int j = 1; j <= n; j++) {
+            // Don't take current coin
+            dp[i][j] = dp[i][j-1];
+            
+            // Take current coin if possible
+            if(coins[j-1] <= i) {
+                int withCurrent = dp[i - coins[j-1]][j];
+                if(withCurrent != INF) {
+                    dp[i][j] = min(dp[i][j], 1 + withCurrent);
+                }
+            }
+        }
+    }
+    
+    return dp[amount][n] == INF ? -1 : dp[amount][n];
+}
